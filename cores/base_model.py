@@ -22,9 +22,9 @@ class MixinFields:
 
     id = Column(Integer, primary_key=True, autoincrement=True, comment="主键ID")
 
-    created = Column(DateTime, nullable=True, index=True, default=func.now(), comment="添加数据时间")
+    created = Column(DateTime, nullable=True, index=True, server_default=func.now(), comment="添加数据时间")
     updated = Column(
-        DateTime, nullable=True, index=True, default=func.now(), onupdate=func.now(), comment="修改数据时间"
+        DateTime, nullable=True, index=True, server_default=func.now(), onupdate=func.now(), comment="修改数据时间"
     )
 
 
@@ -265,7 +265,7 @@ class MixinFunctions:
         return tmp_dict
 
     @classmethod
-    async def upsert_async(
+    async def bulk_insert_or_update(
         cls, records, batch_size=1000, commit_on_chunk=True, update_keys=['id'], exclude_keys=[], run_update=True
     ):
         if not records:
