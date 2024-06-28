@@ -5,7 +5,7 @@ import time
 
 from loguru import logger
 
-from extensions.redis_extras import RedisPool
+from commons.extensions.redis_extras import RedisPool
 
 
 def retry_on_exceptions(exceptions, max_retries=3, interval=1):

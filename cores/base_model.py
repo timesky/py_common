@@ -10,10 +10,8 @@ from sqlalchemy import DATETIME, DECIMAL, INTEGER, Column, DateTime, Integer, di
 #
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import select, update, delete
-from ..extensions.db_extras import get_db_session_async
+from commons.extensions.db_extras import get_db_session_async
 
-
-# from app.extensions.database import db
 
 # 创建基类
 BaseModel = declarative_base()

@@ -1,6 +1,6 @@
 import aioredis
 
-from app import settings
+from config import settings
 
 
 async def get_redis_pool():

@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_scop
 
 # from sqlalchemy.orm import sessionmaker, scoped_session
 
-from app import settings
+from config import settings
 
 # engine = create_engine(
 #     settings.SQLALCHEMY_DATABASE_URI,
@@ -43,8 +43,8 @@ AsyncSessionLocal = async_scoped_session(
 )
 
 
-def import_all_models():
-    model_files = glob.glob(os.path.join(settings.ROOT_PATH, 'app', 'models', '*.py'))
+def import_all_models(models_path=os.path.join(settings.ROOT_PATH, 'app', 'models', '*.py')):
+    model_files = glob.glob(models_path)
 
     for file in model_files:
         # print(file)
