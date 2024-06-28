@@ -10,7 +10,8 @@ from sqlalchemy import DATETIME, DECIMAL, INTEGER, Column, DateTime, Integer, di
 #
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import select, update, delete
-from app.extensions.db_extras import get_db_session_async
+from ..extensions.db_extras import get_db_session_async
+
 
 # from app.extensions.database import db
 
@@ -22,6 +23,7 @@ class MixinFields:
     """公共字段"""
 
     id = Column(Integer, primary_key=True, autoincrement=True, comment="主键ID")
+
     created = Column(DateTime, nullable=True, index=True, default=func.now(), comment="添加数据时间")
     updated = Column(
         DateTime, nullable=True, index=True, default=func.now(), onupdate=func.now(), comment="修改数据时间"
