@@ -28,13 +28,15 @@ class BaseEnum(Enum):
             msg = f'{msg}: {ext_msg}'
         raise Exception(code, msg)
 
-    def generate_api_result(self, ext_msg: str = None, data: dict = None) -> dict:
+    def generate_api_result(
+        self, ext_msg: str = None, data: dict = None, client_ip: str = '', request_id: str = ''
+    ) -> dict:
         code = self._value_
         msg = self.label
         if ext_msg:
             msg = f'{msg}: {ext_msg}'
 
-        result = {'code': code, 'msg': msg}
+        result = {'code': code, 'message': msg, 'client_ip': client_ip, 'request_id': request_id}
         if data:
             result['data'] = data
         return result
