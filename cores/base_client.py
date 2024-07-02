@@ -7,7 +7,8 @@ from loguru import logger
 import requests
 import urllib3
 
-from app.commons.decorators import retry_on_exceptions
+from commons.decorators import retry_on_exceptions
+from config import settings
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -114,12 +115,13 @@ class BaseAsyncClient:
     def __init__(self):
         # self.session = aiohttp.ClientSession()
         self.timeout = 30
-        self.echo_request_details = False
+        self.echo_request_details = settings.ECHO_REQUEST_DETAILS
         # self._cookies = None
         self._cookie_jar = aiohttp.CookieJar(unsafe=True)
         self._proxies = None
         self.verify = False
         self.curr_content_type = None
+        self.append_headers = {}
 
     @property
     def default_headers(self):
@@ -148,11 +150,15 @@ class BaseAsyncClient:
                 max_line_size=81900,
                 max_field_size=81900,
             '''
+            headers = kwargs.pop('headers', self.default_headers)
+            if self.append_headers:
+                headers.update(self.append_headers)
+
             async with aiohttp.ClientSession(
                 # cookies=self._cookies,
                 cookie_jar=self._cookie_jar,
                 timeout=aiohttp.ClientTimeout(total=timeout),
-                headers=kwargs.pop('headers', self.default_headers),
+                headers=headers,
                 max_line_size=81900,
                 max_field_size=81900,
             ) as session:
@@ -182,9 +188,9 @@ class BaseAsyncClient:
                         log_info.update(
                             dict(
                                 {
-                                    "headers": dict(response.request_info.headers),
-                                    # "response-content-type": response.headers.get('Content-Type', ''),
-                                    "text": (
+                                    "request-headers": dict(response.request_info.headers),
+                                    "response-headers": dict(response.headers),
+                                    "response-text": (
                                         response_text
                                         if self.content_type_is_text
                                         else f"返回内容({self.curr_content_type})不是纯文本"
