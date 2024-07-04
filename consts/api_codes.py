@@ -6,4 +6,6 @@ from commons.cores.base_const import BaseEnum
 class ApiCodes(BaseEnum):
     """接口返回码"""
 
-    SUCCESS = ('success', '成功')
+    SUCCESS = ('SUCCESS', '成功')
+    UNKNOWN_ERROR = ('UNKNOWN_ERROR', '未知错误')
+    NO_SEARCH_RESULT = ('NO_SEARCH_RESULT', '无搜索结果')
