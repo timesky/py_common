@@ -29,12 +29,15 @@ class BaseEnum(Enum):
         raise Exception(code, msg)
 
     def generate_api_result(
-        self, ext_msg: str = None, data: dict = None, client_ip: str = '', request_id: str = ''
+        self, msg: str = None, ext_msg: str = None, data: dict = None, client_ip: str = '', request_id: str = ''
     ) -> dict:
         code = self._value_
-        msg = self.label
-        if ext_msg:
-            msg = f'{msg}: {ext_msg}'
+
+        # 传入msg时会覆盖label和ext_msg
+        if not msg:
+            msg = self.label
+            if ext_msg:
+                msg = f'{msg}: {ext_msg}'
 
         result = {'code': code, 'message': msg, 'client_ip': client_ip, 'request_id': request_id}
         if data:
