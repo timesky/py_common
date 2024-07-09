@@ -90,3 +90,19 @@ async def get_db_session_async() -> AsyncGenerator:
     finally:
         if session:
             await session.close()
+
+
+from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo.server_api import ServerApi
+from config import settings
+
+# Replace the placeholder with your Atlas connection string
+# uri = "<connection string>"
+
+# Set the Stable API version when creating a new client
+mongo_client = AsyncIOMotorClient(settings.MONGO_URL, server_api=ServerApi('1'))
+
+
+async def get_mongo_db(db_name: str) -> AsyncIOMotorClient:
+    mongo_db = mongo_client[db_name]
+    return mongo_db
