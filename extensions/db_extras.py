@@ -80,7 +80,7 @@ def import_all_models(models_path=os.path.join(settings.ROOT_PATH, 'app', 'model
 async def get_db_session_async() -> AsyncGenerator:
     session = None
     try:
-        session = AsyncSessionLocal()
+        session = AsyncSessionLocal
         yield session
         await session.commit()
     except Exception as e:
@@ -89,6 +89,7 @@ async def get_db_session_async() -> AsyncGenerator:
         raise e
     finally:
         if session:
+            await session.remove()
             await session.close()
 
 
