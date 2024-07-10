@@ -14,7 +14,7 @@ class BaseFlightServices(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def search(self, dep: str, arr: str, dep_date: str, return_date: str, adult=1):
+    async def search(self, dep_code: str, arr_code: str, dep_date: str, return_date: str, adult=1):
         """报价查询"""
         raise NotImplementedError
 
