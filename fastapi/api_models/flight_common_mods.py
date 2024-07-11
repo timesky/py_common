@@ -40,3 +40,5 @@ class FlightInfo(BaseModel):
     stops: int
     dep_time: str
     arr_time: str
+    supplier: Optional[str] = ""
+    supplier_iata_id: Optional[str] = ""
