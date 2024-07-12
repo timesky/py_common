@@ -7,6 +7,7 @@ class ApiCodes(BaseEnum):
     """接口返回码"""
 
     SUCCESS = ('SUCCESS', '成功')
-    UNKNOWN_ERROR = ('UNKNOWN_ERROR', '未知错误')
+    UNKNOWN = ('UNKNOWN', '未知错误')
     SITE_ERROR = ('SITE_ERROR', '站点报错')
     NO_SEARCH_RESULT = ('NO_SEARCH_RESULT', '无搜索结果')
+    NO_ACCOUNT = ('NO_ACCOUNT', '无可用账号')
