@@ -5,12 +5,20 @@ from loguru import logger
 
 class BaseFlightServices(ABC):
 
-    # SITE_CODE = None
-    # FLIGHT_CODE = None
-
     @abstractmethod
     async def refresh_authorization(self):
-        """授权信息刷新"""
+        """授权信息刷新
+
+        包括取账号，刷新cookies，token等
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    async def update_cities(self):
+        """更新城市信息
+
+        向站点独有的数据集中更新城市信息
+        """
         raise NotImplementedError
 
     @abstractmethod
@@ -20,7 +28,7 @@ class BaseFlightServices(ABC):
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
-        required_attrs = ['SITE_CODE', 'FLIGHT_CODE']
+        required_attrs = ['SITE_CODE', 'AIRLINE_CODE', 'AIRLINE_NAME']
         sub_class_attrs = [name for name in dir(cls) if not name.startswith('__')]
         for name in sub_class_attrs:
             # if name.startswith('__') :

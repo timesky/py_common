@@ -5,6 +5,7 @@ import time
 
 from loguru import logger
 
+from commons.extensions.db_extras import get_mongo_db
 from commons.extensions.redis_extras import RedisPool
 
 
@@ -71,6 +72,24 @@ def process_locker(lock_key, lock_ttl=60):
                     logger.info(f"解锁成功，key：{lock_key}")
 
             return result
+
+        return wrapper
+
+    return decorator
+
+
+def init_mongo_db(db_name="flight_fare"):
+    def decorator(func):
+        @functools.wraps(func)
+        async def wrapper(*args, **kwargs):
+            from motor.motor_asyncio import AsyncIOMotorClient
+            from pymongo.server_api import ServerApi
+
+            # Set the Stable API version when creating a new client
+            mongo_db = await get_mongo_db(db_name)
+            if 'mongo_db' not in kwargs:
+                kwargs['mongo_db'] = mongo_db
+            return await func(*args, **kwargs)
 
         return wrapper
 
