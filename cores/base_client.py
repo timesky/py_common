@@ -121,6 +121,7 @@ class BaseAsyncClient:
         self._proxies = None
         self.verify = False
         self.curr_content_type = None
+        self.curr_response_headers = None
         self.append_headers = {}
 
     @property
@@ -178,6 +179,7 @@ class BaseAsyncClient:
 
                     response_encoding = response.get_encoding()
 
+                    self.curr_response_headers = response.headers
                     log_info = {
                         "method": method,
                         "url": str(response.request_info.url),
