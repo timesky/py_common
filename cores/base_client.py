@@ -123,6 +123,7 @@ class BaseAsyncClient:
         self.curr_content_type = None
         self.curr_response_headers = None
         self.append_headers = {}
+        self.encoding = 'utf-8'
 
     @property
     def default_headers(self):
@@ -173,7 +174,12 @@ class BaseAsyncClient:
                     # 获取Content-Type头
                     self.curr_content_type = response.headers.get('Content-Type', '').lower()
                     if self.content_type_is_text:
-                        response_text = await response.text()
+                        # 尝试以utf-8解码
+                        try:
+                            response_text = await response.text(encoding=self.encoding)
+                        except UnicodeDecodeError:
+                            # 如果utf-8解码失败，尝试使用ISO-8859-1
+                            response_text = await response.text(encoding='ISO-8859-1')
                     else:
                         response_text = await response.read()
 

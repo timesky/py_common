@@ -9,3 +9,4 @@ class CurrencyType(BaseEnum):
     CNY = ('CNY', '人民币')
     USD = ('USD', '美元')
     EUR = ('EUR', '欧元')
+    THB = ('THB', '泰国铢')
