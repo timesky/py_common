@@ -12,7 +12,7 @@ class Cabin(BaseModel):
 
 class Segment(BaseModel):
     segment_index: int  # 航段序号
-    flight_code: str  # 航班号
+    airline_code: str  # 航班号
     flight_number: str  # 航班序号
     dep_code: str  # 出发机场三字码
     arr_code: str  # 到达机场三字码
