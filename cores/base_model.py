@@ -14,7 +14,7 @@ from commons.extensions.db_extras import get_db_session_async
 
 
 # 创建基类
-BaseModel = declarative_base()
+BaseDBModel = declarative_base()
 
 
 class MixinFields:
@@ -226,9 +226,9 @@ class MixinFunctions:
         if isinstance(result_obj, sqlalchemy.engine.row.Row):
             result_obj = result_obj._asdict()
 
-        keys = cls.__table__.columns.keys() if isinstance(result_obj, BaseModel) else result_obj.keys()
+        keys = cls.__table__.columns.keys() if isinstance(result_obj, BaseDBModel) else result_obj.keys()
         for key in keys:
-            value = getattr(result_obj, key) if isinstance(result_obj, BaseModel) else result_obj[key]
+            value = getattr(result_obj, key) if isinstance(result_obj, BaseDBModel) else result_obj[key]
 
             if include and key not in include:
                 if debug:
@@ -240,7 +240,7 @@ class MixinFunctions:
 
             if value is None and handle_none:
                 # 判断是否是查询结果对象
-                if isinstance(result_obj, BaseModel):
+                if isinstance(result_obj, BaseDBModel):
                     column_type = cls.__table__.columns[key].type
                     if isinstance(column_type, (INTEGER,)):
                         tmp_dict[key] = 0

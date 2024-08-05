@@ -13,4 +13,4 @@ class FlightResourceSiteType(BaseEnum):
 @unique
 class FlightResourceSiteStatus(BaseEnum):
     NORMAL = ('normal', '正常')
-    NOT_NORMAL = ('not_normal', '不正常')
+    UN_NORMAL = ('un_normal', '不正常')

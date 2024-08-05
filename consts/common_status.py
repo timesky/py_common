@@ -2,10 +2,9 @@ from enum import unique
 from commons.cores.base_const import BaseEnum
 
 
-# @unique
-# class AdminUserStatus(BaseEnum):
-#     """币种"""
+@unique
+class EnableStatus(BaseEnum):
+    """是否启用"""
 
-#     CNY = ('CNY', '人民币')
-#     USD = ('USD', '美元')
-#     EUR = ('EUR', '欧元')
+    ENABLED = ('enabled', '启用')
+    DISABLED = ('disabled', '禁用')
