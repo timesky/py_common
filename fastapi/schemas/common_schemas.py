@@ -8,15 +8,15 @@ class BaseSearchOrderBy(BaseModel):
     order: str = None
 
 
-class BaseSearchRequest(BaseModel):
+class BaseSearchIn(BaseModel):
     page: int = 1
     page_size: int = 50
     order_by: Optional[BaseModel] = None
 
 
-class BaseResponse(BaseModel):
+class BaseApiOut(BaseModel):
     code: str
-    message: str
+    message: Optional[str] = None
     data: Optional[BaseModel] = None
-    client_ip: str
-    request_id: str
+    client_ip: Optional[str] = None
+    request_id: Optional[str] = None
