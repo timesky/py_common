@@ -1,5 +1,5 @@
 # 基础模块
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel
 
 
@@ -12,6 +12,14 @@ class BaseSearchIn(BaseModel):
     page: int = 1
     page_size: int = 50
     order_by: Optional[BaseModel] = None
+
+
+class BaseSearchResult(BaseModel):
+    '''查询出参data'''
+
+    total: int
+    # page: int
+    rows: List[BaseModel]
 
 
 class BaseApiOut(BaseModel):

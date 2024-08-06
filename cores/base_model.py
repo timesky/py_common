@@ -156,8 +156,22 @@ class MixinFunctions:
             return count
 
     @classmethod
-    async def get_by_async(cls, *conditions):
-        return await cls.get_all_async(*conditions, single=True)
+    async def get_by_async(cls, *conditions, columns=None):
+        return await cls.get_all_async(*conditions, single=True, columns=columns)
+
+    @classmethod
+    async def disable_foreign_key_checks(cls, session):
+        from sqlalchemy import text
+
+        await session.execute(text('SET FOREIGN_KEY_CHECKS = 0;'))
+        # await session.commit()
+
+    @classmethod
+    async def enable_foreign_key_checks(cls, session):
+        from sqlalchemy import text
+
+        await session.execute(text('SET FOREIGN_KEY_CHECKS = 1;'))
+        # await session.commit()
 
     @classmethod
     async def delete_all_async(cls, *conditions):
@@ -165,18 +179,31 @@ class MixinFunctions:
             query = delete(cls)
             if conditions:
                 query = query.where(*conditions)
+                await cls.disable_foreign_key_checks(session)
                 result_set = await session.execute(query)
+                await cls.enable_foreign_key_checks(session)
                 await session.commit()
                 return result_set.rowcount
+            else:
+                raise ValueError('条件不能为空')
 
     @classmethod
-    async def get_all_async(cls, *conditions, single=False, limit=None, offset=None, order_by=None):
+    async def get_all_async(
+        cls, *conditions, single=False, limit=None, offset=None, order_by=None, group_by=None, columns=None
+    ):
         async with get_db_session_async() as session:
 
-            query = select(cls)
+            if columns and isinstance(columns, list):
+                query = select(*columns)
+            else:
+                query = select(cls)
             if conditions:
                 query = query.where(*conditions)
-
+            if group_by is not None:
+                if isinstance(group_by, list):
+                    query = query.group_by(*group_by)
+                else:
+                    query = query.group_by(group_by)
             if order_by is not None:
                 if isinstance(order_by, list):
                     query = query.order_by(*order_by)
@@ -191,12 +218,12 @@ class MixinFunctions:
             result_set = await session.execute(query)
             if single:
                 row = result_set.first()
-                if row:
+                if row and len(row) > 0 and row[0] is not None:
                     return cls.to_dict(row[0])
                 else:
                     return None
             rows = result_set.all()
-            return [cls.to_dict(row[0]) for row in rows]
+            return [cls.to_dict(row[0] if isinstance(row[0], BaseDBModel) else row) for row in rows]
 
     @classmethod
     def to_dict(
