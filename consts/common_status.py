@@ -8,3 +8,9 @@ class EnableStatus(BaseEnum):
 
     ENABLED = ('enabled', '启用')
     DISABLED = ('disabled', '禁用')
+
+
+@unique
+class SuccessStatus(BaseEnum):
+    SUCCESS = ('success', '成功')
+    FAILED = ('failed', '失败')
