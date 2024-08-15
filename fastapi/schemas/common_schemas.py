@@ -1,5 +1,5 @@
 # 基础模块
-from typing import List, Optional
+from typing import List, Optional, Union
 from pydantic import BaseModel
 
 
@@ -25,6 +25,6 @@ class BaseSearchResult(BaseModel):
 class BaseApiOut(BaseModel):
     code: str
     message: Optional[str] = None
-    data: Optional[BaseModel] = None
+    data: Optional[Union[BaseModel, str]] = None
     client_ip: Optional[str] = None
     request_id: Optional[str] = None

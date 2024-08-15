@@ -1,4 +1,5 @@
 from enum import Enum, unique
+from typing import Optional, Union
 
 
 @unique
@@ -29,7 +30,12 @@ class BaseEnum(Enum):
         raise Exception(code, msg)
 
     def generate_api_result(
-        self, msg: str = None, ext_msg: str = None, data: dict = None, client_ip: str = '', request_id: str = ''
+        self,
+        msg: str = None,
+        ext_msg: str = None,
+        data: Optional[Union[dict, str]] = None,
+        client_ip: str = '',
+        request_id: str = '',
     ) -> dict:
         code = self._value_
 
