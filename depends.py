@@ -8,6 +8,7 @@ from fastapi import Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordBearer
 import jwt
 from fastapi import status
+from loguru import logger
 
 
 def get_real_client_ip(request: Request) -> str:
@@ -49,11 +50,11 @@ async def get_current_user_id(
     )
 
     try:
-        if isinstance(token, str):
-            token = OAuth2PasswordBearer(tokenUrl=token)
         # 解码 JWT 令牌
         payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        # logger.debug(payload)
         user_id: Optional[str] = payload.get(user_id_field)
+        # logger.debug(user_id)
 
         # 如果没有用户 ID，抛出验证异常
         if user_id is None:

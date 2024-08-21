@@ -5,8 +5,8 @@ import time
 
 from loguru import logger
 
-from commons.extensions.db_extras import get_mongo_db
-from commons.extensions.redis_extras import RedisPool
+from app.extensions.db_extras import get_mongo_db
+from app.extensions.redis_extras import RedisPool
 
 
 def retry_on_exceptions(exceptions, max_retries=3, interval=1):
