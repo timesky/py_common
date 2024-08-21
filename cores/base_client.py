@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from abc import ABC, abstractmethod
 import asyncio
-import copy
 from loguru import logger
 import requests
 import urllib3
 
 from commons.decorators import retry_on_exceptions
-from config import settings
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -112,18 +109,18 @@ class BaseClient:
 
 
 class BaseAsyncClient:
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         # self.session = aiohttp.ClientSession()
-        self.timeout = 30
-        self.echo_request_details = settings.ECHO_REQUEST_DETAILS
+        self.timeout = kwargs.get('timeout', 30)
+        self.echo_request_details = kwargs.get('echo_request_details', False)
         # self._cookies = None
         self._cookie_jar = aiohttp.CookieJar(unsafe=True)
-        self._proxies = None
-        self.verify = False
+        self._proxies = kwargs.get('proxies', None)
+        self.verify = kwargs.get('verify', False)
         self.curr_content_type = None
         self.curr_response_headers = None
-        self.append_headers = {}
-        self.encoding = 'utf-8'
+        self.append_headers = kwargs.get('append_headers', {})
+        self.encoding = kwargs.get('encoding', 'utf-8')
 
     @property
     def default_headers(self):

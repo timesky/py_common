@@ -2,45 +2,64 @@
 这里存放fastapi的depends
 '''
 
+from typing import Optional
 from typing_extensions import Annotated
 from fastapi import Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordBearer
 import jwt
 from fastapi import status
 
-from config import settings
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=settings.LOGIN_URL)
-
 
 def get_real_client_ip(request: Request) -> str:
     """
-    获取真实的客户端 IP 地址
+    获取真实的客户端 IP 地址。
+    如果有 X-Forwarded-For 头字段，使用其中的第一个 IP 地址作为真实客户端 IP。
+    否则使用 request.client.host 获取的 IP。
     """
-    # 获取原始客户端 IP 地址
-    client_ip = request.client.host
-
-    # 检查 X-Forwarded-For 头字段，以获取真实的客户端 IP 地址
+    # 获取 X-Forwarded-For 头字段的值
     x_forwarded_for = request.headers.get("X-Forwarded-For")
+
     if x_forwarded_for:
-        client_ip = x_forwarded_for.split(',')[0].strip()
+        # 返回第一个 IP 地址（即最原始的客户端 IP）
+        return x_forwarded_for.split(',')[0].strip()
 
-    return client_ip
+    # 否则返回原始客户端 IP
+    return request.client.host
 
 
-async def get_current_admin_id(token: Annotated[str, Depends(oauth2_scheme)]):
+async def get_current_user_id(
+    token: Annotated[str, Depends(OAuth2PasswordBearer(tokenUrl="token"))],
+    secret_key: str,
+    algorithm: str,
+    user_id_field: str = "id",
+) -> Optional[str]:
+    """
+    获取当前用户 ID 的通用方法，使用 JWT 令牌验证。
+
+    :param token: 传递的 JWT 令牌
+    :param secret_key: 用于解密 JWT 的密钥
+    :param algorithm: 用于解密 JWT 的算法
+    :param user_id_field: JWT 载荷中的用户 ID 字段名
+    :return: 用户 ID（如果验证成功），否则返回 None
+    """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        admin_id: str = payload.get("id")
-        if admin_id is None:
+        if isinstance(token, str):
+            token = OAuth2PasswordBearer(tokenUrl=token)
+        # 解码 JWT 令牌
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        user_id: Optional[str] = payload.get(user_id_field)
+
+        # 如果没有用户 ID，抛出验证异常
+        if user_id is None:
             raise credentials_exception
 
-    except jwt.InvalidTokenError:
+    except jwt.PyJWTError:  # 捕获所有 JWT 相关的错误
         raise credentials_exception
 
-    return admin_id
+    return user_id

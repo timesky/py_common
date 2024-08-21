@@ -95,7 +95,6 @@ async def get_db_session_async() -> AsyncGenerator:
 
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.server_api import ServerApi
-from config import settings
 
 # Replace the placeholder with your Atlas connection string
 # uri = "<connection string>"
