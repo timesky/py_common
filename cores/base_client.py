@@ -58,7 +58,7 @@ class BaseClient:
                         "cost(s)": response.elapsed.seconds,
                         "text": response.text,
                     }
-                ),
+                )
             )
         else:
             logger.info(
@@ -73,7 +73,7 @@ class BaseClient:
                         "cost(s)": response.elapsed.seconds,
                         # "text": response.text,
                     }
-                ),
+                )
             )
 
         return response.text
@@ -134,7 +134,9 @@ class BaseAsyncClient:
                 result = False
         return result
 
-    @retry_on_exceptions(exceptions=[asyncio.exceptions.TimeoutError, aiohttp.client_exceptions.ClientConnectorError])
+    # 基类方法不要用自动重试，会引发不可以指定错误
+    # 应当在明确需要重试的地方使用装饰器
+    # @retry_on_exceptions(exceptions=[asyncio.exceptions.TimeoutError, aiohttp.client_exceptions.ClientConnectorError])
     async def _request(self, method, url, **kwargs):
         timeout = kwargs.pop('timeout', self.timeout)
         aio_session = None
@@ -258,7 +260,7 @@ class CommonClient(BaseAsyncClient):
     @property
     def default_headers(self):
         return {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36'
         }
 
     def post(self, url, **kwargs):
