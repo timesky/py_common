@@ -43,6 +43,29 @@ async def get_current_user_id(
     :param user_id_field: JWT 载荷中的用户 ID 字段名
     :return: 用户 ID（如果验证成功），否则返回 None
     """
+
+    payload = await get_current_user(token=token, secret_key=secret_key, algorithm=algorithm)
+
+    user_id: Optional[str] = payload.get(user_id_field)
+
+    return user_id
+
+
+async def get_current_user(
+    token: Annotated[str, Depends(OAuth2PasswordBearer(tokenUrl="token"))],
+    secret_key: str,
+    algorithm: str,
+    user_id_field: str = "id",
+) -> Optional[dict]:
+    """
+    获取当前用户的通用方法，使用 JWT 令牌验证。
+
+    :param token: 传递的 JWT 令牌
+    :param secret_key: 用于解密 JWT 的密钥
+    :param algorithm: 用于解密 JWT 的算法
+    :param user_id_field: JWT 载荷中的用户 ID 字段名
+    :return: 用户信息（如果验证成功），否则返回 None
+    """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -59,8 +82,6 @@ async def get_current_user_id(
         # 如果没有用户 ID，抛出验证异常
         if user_id is None:
             raise credentials_exception
-
     except jwt.PyJWTError:  # 捕获所有 JWT 相关的错误
         raise credentials_exception
-
-    return user_id
+    return payload
