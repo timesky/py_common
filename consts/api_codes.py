@@ -12,3 +12,5 @@ class ApiCodes(BaseEnum):
     NO_SEARCH_RESULT = ('NO_SEARCH_RESULT', '无搜索结果')
     SEARCH_TIMEOUT = ('SEARCH_TIMEOUT', '限定时间内无搜索结果')
     NO_ACCOUNT = ('NO_ACCOUNT', '无可用账号')
+    NO_FOUND = ('NO_FOUND', '记录未找到')
+    LOCK_ERROR = ('LOCK_ERROR', '已被锁定')
